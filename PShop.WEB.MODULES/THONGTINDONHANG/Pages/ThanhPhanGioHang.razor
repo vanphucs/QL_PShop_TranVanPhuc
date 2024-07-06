@@ -1,0 +1,65 @@
+﻿@page "/cart"
+
+@using PShop.NGUOIDUNG.GioHang.ChucNang
+
+@using PShop.COTLOI.Models
+@inject IXemGioHang viewShoppingCartUseCase
+
+<h3 class="text-center" style="font-size: 3em; font-family: 'Times New Roman', Times, serif, sans-serif;">Giỏ Hàng</h3>
+<br />
+
+<br />
+@if (order != null && order.LineItems != null && order.LineItems.Count > 0)
+{
+    <div class="row">
+        <div class="col-6">
+            <ul>
+                @for (int i = 0; i < order.LineItems.Count; i++)
+                {
+                    <ThanhPhanMucHang 
+                        LineItem="order.LineItems[i]"
+                        OnXoaSanPham="HandleDeleteProduct"
+                        OnCapNhatSanPham="HandleUpdateQuantity"
+                    ></ThanhPhanMucHang>
+
+                    @if (i < order.LineItems.Count - 1)
+                    {
+                        <li style="list-style:none">
+                            <hr />
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+        <div class="col">
+            <ThanhPhanTomTatDH order="order"></ThanhPhanTomTatDH>
+        </div>
+    </div>
+}
+else
+{
+    <p>Không có mặt hàng nào trong giỏ hàng.</p>
+}
+
+@code {
+    private Order order;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            order = await viewShoppingCartUseCase.Execute();
+            StateHasChanged();
+        }
+    }
+
+    private void HandleDeleteProduct(Order order)
+    {
+        this.order = order;
+    }
+
+    private void HandleUpdateQuantity(Order order)
+    {
+        this.order = order;
+    }
+}

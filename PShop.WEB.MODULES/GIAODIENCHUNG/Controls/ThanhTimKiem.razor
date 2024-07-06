@@ -1,0 +1,26 @@
+﻿
+
+<div class="d-flex justify-content-center mb-3">
+    <div class="col-auto">
+        <input type="text" class="form-control search-bar" id="filter" style="width: 500px;" @bind-value="filter" placeholder="Tìm kiếm" />
+    </div>
+
+    <div class="col-auto">
+        <button type="button" class="btn mb-3" style="width: 100px; background-color: lightblue; color: black;" @onclick="HandleSearch">Tìm kiếm</button>
+    </div>
+</div>
+
+
+@code {
+    private string filter;
+
+    [Parameter]
+    public EventCallback<string> OnSearch { get; set; }
+
+    private void HandleSearch()
+    {
+        OnSearch.InvokeAsync(filter);
+    }
+}
+
+

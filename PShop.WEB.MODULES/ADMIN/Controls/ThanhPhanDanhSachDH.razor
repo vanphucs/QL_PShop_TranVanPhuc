@@ -1,0 +1,24 @@
+﻿@if (Orders !=null && Orders.Count()>0)
+{
+    <table class="table">
+        <thead>
+            <tr style="background-color: lightblue;">
+                <th>Ngày Đặt Hàng</th>
+                <th>ID Đơn Hàng</th>
+                <th>Tên Khách Hàng</th>
+                <th>Địa Chỉ</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Orders)
+            {
+                <ThanhPhanDonHang Order="order"></ThanhPhanDonHang>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [Parameter]
+    public IEnumerable<Order> Orders { get; set; }
+}

@@ -1,0 +1,25 @@
+﻿@using PShop.COTLOI.Models
+@using Microsoft.AspNetCore.Components.Routing
+
+
+@if (this.Productt != null)
+{
+    <tr>
+        <td>
+            <NavLink href="@($"product/{Productt.ProductId}")">
+                @Productt.Name
+            </NavLink>
+        </td>
+        <td>
+            @Productt.Brand
+        </td>
+        <td>@Productt.Gia.ToString("C")</td>
+    </tr>
+}
+
+@code {
+    [Parameter] public Product Productt { get; set; }
+}
+
+
+

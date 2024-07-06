@@ -1,0 +1,50 @@
+﻿@page "/product/{id:int}"
+
+@inject NavigationManager navigationManager;
+
+@inject IXemSP viewProduct
+@inject IThemVaoGioHang addProductToCartUseCase
+
+<h3 class="text-center" style="font-size: 3em; font-family: 'Times New Roman', Times, serif, sans-serif;">Thông Tin Chi Tiết Sản Phẩm</h3>
+<br/>
+
+@if (product != null)
+{
+    <div class="d-flex justify-content-center">
+        <div class="card" style="width: 35rem;">
+            <div class="card-body d-flex flex-column">
+                <img src="@product.ImageLink" class="card-img-top" alt="Product image" />
+                <h5 class="card-title mt-2">@product.Name</h5>
+                <h7 class="card-subtitle mb-2 text-body-secondary">@product.Brand</h7>
+                <hr />
+                <p class="mb-3">
+                    Giá: <label style="color:indianred; font-size: 1.5rem; font-weight: bold;">@product.Gia.ToString("c")</label>
+                </p>
+                <h6 class="card-text mt-2">@product.MoTa</h6>
+                <button class="btn btn-primary mt-4" @onclick="AddToCart" style="background-color: lightblue; border-color: lightblue; color: black;">Thêm Vào Giỏ Hàng</button>
+            </div>
+        </div>
+    </div>
+}
+<NavLink href="">Quay lại</NavLink>
+
+@code {
+    private Product product;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (Id > 0)
+        {
+            product = viewProduct.Execute(Id);
+        }
+    }
+    private void AddToCart()
+    {
+        addProductToCartUseCase.Execute(product.ProductId);
+        navigationManager.NavigateTo("/");
+    }
+}

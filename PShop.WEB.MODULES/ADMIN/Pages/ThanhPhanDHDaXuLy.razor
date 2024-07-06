@@ -1,0 +1,19 @@
+﻿@page "/processedorder"
+
+@attribute [Authorize]
+
+@inject IXemDonHangDaXuLy xemDonHangDaXuLy
+
+<h3 class="text-center" style="font-size: 3em; font-family: 'Times New Roman', Times, serif, sans-serif;">Đơn Hàng Đã Xử Lý</h3>
+<br/>
+
+<ThanhPhanDanhSachDH Orders="orders"></ThanhPhanDanhSachDH>
+
+@code {
+    private IEnumerable<Order> orders;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        orders = xemDonHangDaXuLy.Execute();
+    }
+}

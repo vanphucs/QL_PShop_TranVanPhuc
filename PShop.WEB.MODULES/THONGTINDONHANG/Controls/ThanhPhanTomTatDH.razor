@@ -1,0 +1,79 @@
+﻿@using PShop.COTLOI.Models
+@inject NavigationManager navigationManager
+
+
+<div class="card m-2" style="width: 25rem;">
+    <div class="card-boby">
+        <h5 class="card-title">Bản Tóm Tắt Đặt Hàng</h5>
+        <div class="card-text d-flex justify-content-between">
+            <div>
+                Mặt Hàng (@itemsCount):
+            </div>
+            <div>
+                @itemTotalPrice.ToString("c")
+            </div>
+        </div>
+        <div class="card-text d-flex justify-content-between">
+            <div>
+                Vận Chuyển Và Xử Lý:
+            </div>
+            <div>
+                <text>0 ₫</text>
+            </div>
+        </div>
+        <div class="card-text d-flex justify-content-between">
+            <div>
+                Thuế Ước Tính:
+            </div>
+            <div>
+                <text>0 ₫</text>
+            </div>
+        </div>
+        <hr />
+        <div class="card-text d-flex justify-content-between" style="color: darkred">
+            <div>
+                <b>Tổng Số Đơn Hàng:</b>
+            </div>
+            <div>
+                <b>@itemTotalPrice.ToString("c")</b>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        @if (!HidePlaceOrder)
+        {
+            <button class="button btn-primary" @onclick="PlaceOrder" style="background-color: lightblue; border-color: lightblue; color: black;">Đặt Hàng Của Bạn</button>
+        }
+    </div>
+
+
+
+
+</div>
+
+@code {
+    int itemsCount = 0;
+    double itemTotalPrice = 0;
+
+    [Parameter]
+    public Order order { get; set; }
+
+    [Parameter]
+    public bool HidePlaceOrder { get; set; } = false;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (order != null)
+        {
+            itemsCount = order.LineItems.Count;
+            itemTotalPrice = 0;
+            order.LineItems.ForEach(x => itemTotalPrice += x.Price * x.Quantity);
+        }
+    }
+    private void PlaceOrder()
+    {
+        navigationManager.NavigateTo("/placeorder");
+    }
+}
+

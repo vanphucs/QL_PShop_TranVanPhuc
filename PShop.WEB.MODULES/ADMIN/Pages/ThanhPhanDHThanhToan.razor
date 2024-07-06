@@ -1,0 +1,20 @@
+﻿@page "/outstandingorders"
+@page "/admin"
+
+@attribute [Authorize]
+
+@inject IXemDHChuaThanhToan xemDHChuaThanhToan
+
+<h3 class="text-center" style="font-size: 3em; font-family: 'Times New Roman', Times, serif, sans-serif;">Đơn đặt hàng</h3>
+<br />
+<ThanhPhanDanhSachDH Orders="orders"></ThanhPhanDanhSachDH>
+
+
+@code {
+    private IEnumerable<Order> orders;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        orders = xemDHChuaThanhToan.Execute();
+    }
+}

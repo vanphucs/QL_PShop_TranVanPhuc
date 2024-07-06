@@ -1,0 +1,43 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@using THONGTINDONHANG.Controls
+
+@if (customer != null)
+{
+	<EditForm Model="customer" class="form-line" OnValidSubmit="HandleValidSubmit">
+		<DataAnnotationsValidator></DataAnnotationsValidator>
+		<ValidationSummary></ValidationSummary>
+
+		<div class="form-group">
+			<label for="name">Tên Khách Hàng</label>
+			<InputText id="name" @bind-Value="customer.TenKhachHang" class="form-control"></InputText>
+		</div>
+
+		<div class="form-group">
+			<label for="address">Số Điện Thoại</label>
+			<InputText id="name" @bind-Value="customer.SoDienThoai" class="form-control"></InputText>
+		</div>
+
+		<div class="form-group">
+			<label for="city">Địa Chỉ</label>
+			<InputText id="name" @bind-Value="customer.DiaChi" class="form-control"></InputText>
+		</div>
+
+		<button type="submit" class="btn btn-primary" style="background-color: lightblue; border-color: lightblue; color: black;">Đặt Hàng</button>
+	</EditForm>
+}
+@code {
+	private XemThongTinKhachHang customer;
+
+	[Parameter]
+	public EventCallback<XemThongTinKhachHang> OnCustomerInfoSubmitted { get; set; }
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+		customer = new XemThongTinKhachHang();
+	}
+
+	private void HandleValidSubmit()
+	{
+		OnCustomerInfoSubmitted.InvokeAsync(customer);
+	}
+}

@@ -1,0 +1,80 @@
+﻿@page "/orderdetail/{id:int}"
+
+@attribute [Authorize]
+
+@inject NavigationManager navigationManager
+@inject IXemChiTietDonHang xemChiTietDonHang
+@inject IThuTuDatHang thuTuDatHang
+
+<h3 class="text-center" style="font-size: 3em; font-family: 'Times New Roman', Times, serif, sans-serif;">Chi Tiết Đơn Hàng</h3>
+
+@if (order != null)
+{
+    <p>
+        <b>Thông Tin Khách Hàng:</b>
+    </p>
+    <p>@order.TenKhachHang</p>
+    <p>@order.SoDienThoai</p>
+    <p>@order.DiaChi</p>
+    <br />
+    <br />
+    <table class="table">
+        <thead>
+        <thead>
+            <tr style="background-color: lightblue;">
+                <th>Tên Sản Phẩm</th>
+                <th>Giá</th>
+                <th>Số Lượng</th>
+            </tr>
+        </thead>
+        </thead>
+        <tbody>
+            @foreach (var item in order.LineItems)
+            {
+                <tr>
+                    <td>@item.Product.Name</td>
+                    <td>@item.Product.Gia</td>
+                    <td>@item.Quantity</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+    <br />
+    <button type="button" class="btn btn-primary" @onclick="HandleProcessOrder" style="background-color: lightblue;  border-color: lightblue;color: black;">Đánh dấu đơn hàng là đã xử lý</button>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private Order order;
+
+    private AuthenticationState authState;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        authState = await authStateTask;
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (Id > 0)
+        {
+            order = xemChiTietDonHang.Execute(Id);
+        }
+    }
+
+    private void HandleProcessOrder()
+    {
+        if (order != null && authState != null)
+        {
+            thuTuDatHang.Execute(order.OrderId.Value, authState.User.Identity.Name);
+            navigationManager.NavigateTo("/outstandingorders");
+        }
+    }
+}

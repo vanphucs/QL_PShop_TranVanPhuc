@@ -1,0 +1,97 @@
+﻿@inject NavigationManager navigationManager
+
+<style>
+    body, html {
+        height: 100%;
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .background {
+        background-image: url('https://png.pngtree.com/thumb_back/fw800/background/20240102/pngtree-hand-drawn-watercolor-texture-of-blue-crystal-gemstones-a-luxurious-and-image_13865292.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .login-container {
+        width: 300px;
+        padding: 30px;
+        background-color: rgba(224, 247, 250, 0.9); /* Adding transparency */
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+        .login-container h3 {
+            font-size: 2em;
+            font-family: 'Times New Roman', Times, serif, sans-serif;
+            margin-bottom: 20px;
+        }
+
+        .login-container .form-group {
+            margin-bottom: 20px;
+        }
+
+        .login-container .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .login-container .btn-primary {
+            width: 100%;
+            padding: 10px;
+            background-color: #FFFFFF;
+            border-color: #00BCD4;
+            color: #00BCD4;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            .login-container .btn-primary:hover {
+                background-color: #00BCD4;
+                color: #FFFFFF;
+            }
+</style>
+
+<div class="background">
+    <div class="login-container">
+        <h3>Đăng Nhập</h3>
+        @if (loginViewModel != null)
+        {
+            <EditForm Model="loginViewModel" OnValidSubmit="HandleValidSubmit" class="form-line">
+                <DataAnnotationsValidator></DataAnnotationsValidator>
+                <ValidationSummary></ValidationSummary>
+                <div class="form-group">
+                    <InputText id="name" @bind-Value="loginViewModel.UserName" placeholder="Tên Tài Khoản" class="form-control"></InputText>
+                </div>
+                <div class="form-group">
+                    <InputText id="password" @bind-Value="loginViewModel.Password" type="password" placeholder="Mật Khẩu" class="form-control"></InputText>
+                </div>
+                <button type="submit" class="btn btn-primary">Đăng Nhập</button>
+            </EditForm>
+        }
+    </div>
+</div>
+
+@code {
+    private XemModunDangNhap loginViewModel;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        loginViewModel = new XemModunDangNhap();
+    }
+
+    private void HandleValidSubmit()
+    {
+        navigationManager.NavigateTo($"/authenticate?user={loginViewModel.UserName}&pwd={loginViewModel.Password}", true);
+    }
+}

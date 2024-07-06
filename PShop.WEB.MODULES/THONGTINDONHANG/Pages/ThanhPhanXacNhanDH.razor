@@ -1,0 +1,57 @@
+﻿@page "/orderconfirm/{uniqueId}"
+@using PShop.NGUOIDUNG.GioHang.ThongTinDonHang
+@using THONGTINDONHANG.Controls
+@using PShop.COTLOI.Models
+
+@inject IXemXacNhanDH xemXacNhanDH
+
+<h3 style="font-size: 2em; font-family: 'Times New Roman', Times, serif, sans-serif;">Xác nhận đơn hàng</h3>
+
+<br />
+@if (order != null)
+{
+    <p><b>Thông tin vận chuyển:</b></p>
+    <p>Tên Khách Hàng: @order.TenKhachHang</p>
+    <p>Số Điện Thoại: @order.SoDienThoai</p>
+    <p>Địa Chỉ: @order.DiaChi</p>
+    <br />
+    <ThanhPhanTomTatDH order="order" HidePlaceOrder="true"></ThanhPhanTomTatDH>
+    <br />
+    <table class="table">
+        <thead>
+            <tr style="background-color: lightblue;">
+                <th>Tên Sản Phẩm</th>
+                <th>Số Lượng</th>
+                <th>Giá</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in order.LineItems)
+            {
+                <tr>
+                    <td>@item.Product.Name</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.Product.Gia</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Không tìm thấy thông tin đơn hàng.</p>
+}
+
+@code {
+    private Order order;
+    [Parameter]
+    public string UniqueId { get; set; }
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (!string.IsNullOrWhiteSpace(UniqueId))
+        {
+            order = xemXacNhanDH.Execute(UniqueId);
+        }
+    }
+}

@@ -1,0 +1,55 @@
+﻿@page "/placeorder"
+
+@inject NavigationManager navigationManager
+@inject IXemGioHang xemGioHang
+@inject IDatHang datHang
+
+@using PShop.NGUOIDUNG.GioHang.ChucNang
+@using THONGTINDONHANG.Controls
+@using PShop.COTLOI.Models
+
+
+<h3 style="font-size: 2em; font-family: 'Times New Roman', Times, serif, sans-serif;">Thứ tự Order</h3>
+<br/>
+
+@if(order !=null)
+{
+    <div class="row">
+        <div class="col">
+            <ThanhPhanBieuMauKH OnCustomerInfoSubmitted="HandleCustomerInfoSubmitted"></ThanhPhanBieuMauKH>
+        </div>
+        <div class="col">
+            <ThanhPhanTomTatDH order="order" HidePlaceOrder="true"></ThanhPhanTomTatDH>
+        </div>
+    </div>
+}
+
+@code {
+    private Order order;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            order = await xemGioHang.Execute();
+            StateHasChanged();
+        }
+    }
+
+    private async void HandleCustomerInfoSubmitted(XemThongTinKhachHang customer)
+    {
+        var mapper = new AutoMapper.MapperConfiguration(cfg => cfg.CreateMap<XemThongTinKhachHang, Order>()).CreateMapper();
+        mapper.Map<XemThongTinKhachHang, Order>(customer, order);
+
+        var orderUniqueId = await datHang.Execute(order);
+
+        if (string.IsNullOrEmpty(orderUniqueId))
+        {
+            //ToDO: display error
+        }
+        else
+        {
+            navigationManager.NavigateTo($"/orderconfirm/{orderUniqueId}");
+        }
+    }
+}
+

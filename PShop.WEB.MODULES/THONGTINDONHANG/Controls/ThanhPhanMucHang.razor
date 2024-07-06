@@ -1,0 +1,54 @@
+﻿@using PShop.NGUOIDUNG.GioHang.ChucNang
+@using PShop.COTLOI.Models
+@inject IXoaSanPham xoaSanPham
+@inject ICapNhatSanPham capNhatSanPham
+
+@if (LineItem != null && LineItem.Product != null)
+{
+    <li class="row cart-item">
+        <div class="col">
+            <img src="@LineItem.Product.ImageLink" class="img-thumbnail" />
+        </div>
+        <div class="col">
+            <h5>@LineItem.Product.Name</h5>
+            <div>
+                Số Lượng &nbsp;&nbsp;
+                <input type="number" min="0" value="@LineItem.Quantity" @onchange="HandleQuantitychange" />
+            </div>
+            <div class="margin-top-10">
+                Giá: &nbsp;&nbsp; <span style="color: indianred;">@LineItem.Product.Gia.ToString("c")</span>
+            </div>
+        </div>
+        <div class="col">
+            <button class="btn btn-lightblue" @onclick="@(() => XoaSanPham(LineItem.ProductId))">Xóa</button>
+        </div>
+    </li>
+}
+
+@code {
+    [Parameter]
+    public ChiTietOrder LineItem { get; set; }
+
+    [Parameter]
+    public EventCallback<Order> OnXoaSanPham { get; set; }
+    [Parameter]
+    public EventCallback<Order> OnCapNhatSanPham { get; set; }
+    async void HandleQuantitychange(ChangeEventArgs e)
+    {
+        if (e.Value == null || string.IsNullOrEmpty(e.Value.ToString())) return;
+        int qty = 0;
+        if (int.TryParse(e.Value.ToString(), out qty))
+        {
+            if (qty < 0) return;
+            var order = await capNhatSanPham.Execute(LineItem.ProductId, qty);
+            await OnCapNhatSanPham.InvokeAsync(order);
+        }
+    }
+
+    async void XoaSanPham(int ProductId)
+    {
+        var order = await xoaSanPham.Execute(ProductId);
+        await OnXoaSanPham.InvokeAsync(order);
+    }
+}
+
